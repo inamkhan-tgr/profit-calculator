@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Omni-Channel P/L Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { orange: '#e78441', dark: '#15080e', mauve: '#2a1712' },
+                        primary: '#3b82f6'
+                    },
+                    boxShadow: {
+                        soft: '0 24px 60px -20px rgba(15, 24, 40, .35)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hidden-rule { display: none !important; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#090407] text-white overflow-x-hidden">
+    
+    <!-- Background Accents -->
+    <div class="fixed inset-0 z-0 size-full overflow-hidden pointer-events-none">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#1a0b12,transparent_70%)] opacity-70"></div>
+        <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-brand-orange/8 to-transparent md:h-56"></div>
+        <div class="absolute left-[18%] top-[10%] hidden size-[360px] rounded-full bg-brand-orange/5 blur-[96px] md:block"></div>
+    </div>
+
+    <!-- Main Calculator Wrapper -->
+    <main class="relative z-10 flex-1 min-w-0 p-4 md:p-8 lg:p-10 overflow-y-auto scrollbar-hide">
+        <div class="max-w-7xl mx-auto pb-10">
+            
+            <header class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="size-10 rounded-xl bg-brand-orange/20 border border-brand-orange/30 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 text-brand-orange"><rect width="16" height="20" x="4" y="2" rx="2"></rect><line x1="8" x2="16" y1="6" y2="6"></line><line x1="16" x2="16" y1="14" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white">Omni-Channel P/L Calculator</h1>
+                </div>
+                <p class="text-white/50 flex items-center gap-2 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-green-400"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+                    Calculate your exact take-home profit across eBay, Amazon, TikTok and more.
+                </p>
+            </header>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20 md:pb-0">
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Config Section -->
+                    <section class="bg-[#0f0509] p-6 rounded-2xl border border-white/10 space-y-4">
+                        <h2 class="text-xs font-bold text-white/40 uppercase tracking-widest flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg> Marketplace Config
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="inp-platform" class="block text-sm font-medium text-white/70 mb-1">Platform</label>
+                                <div class="relative">
+                                    <select id="inp-platform" class="w-full pl-3 pr-10 py-2.5 bg-[#15080e] border border-white/10 text-white rounded-xl appearance-none focus:ring-2 focus:ring-brand-orange/40 focus:border-brand-orange/40 transition-colors"></select>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute right-3 top-2.5 size-4 text-white/40 pointer-events-none"><path d="m6 9 6 6 6-6"></path></svg>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="inp-region" class="block text-sm font-medium text-white/70 mb-1">Region</label>
+                                <div class="relative">
+                                    <select id="inp-region" class="w-full pl-3 pr-10 py-2.5 bg-[#15080e] border border-white/10 text-white rounded-xl appearance-none focus:ring-2 focus:ring-brand-orange/40 focus:border-brand-orange/40"></select>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute right-3 top-2.5 size-4 text-white/40 pointer-events-none"><path d="m6 9 6 6 6-6"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="inp-category" class="block text-sm font-medium text-white/70 mb-1">Category (platform dependent)</label>
+                            <div class="relative">
+                                <select id="inp-category" class="w-full pl-3 pr-10 py-2.5 bg-[#15080e] border border-white/10 text-white rounded-xl appearance-none focus:ring-2 focus:ring-brand-orange/40 focus:border-brand-orange/40 truncate"></select>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute right-3 top-2.5 size-4 text-white/40 pointer-events-none"><path d="m6 9 6 6 6-6"></path></svg>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Advanced Rules Section -->
+                    <section id="section-advanced-rules" class="bg-white/5 p-5 rounded-xl shadow-soft border border-white/10 space-y-4 backdrop-blur-sm">
+                        <h2 class="text-sm font-semibold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M14 17H5"></path><path d="M19 7h-9"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg> Advanced Rules
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                            
+                            <label id="wrap-vat-reg" class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition hidden-rule">
+                                <input id="inp-vat-reg" type="checkbox" class="size-4 text-blue-400 rounded">
+                                <span class="text-sm font-medium text-white/70">I am VAT/GST Registered</span>
+                            </label>
+
+                            <div id="wrap-hmrc" class="p-3 rounded-lg border border-white/10 bg-white/5 hidden-rule">
+                                <label for="inp-hmrc" class="block text-xs font-medium text-white/60 mb-1">HMRC Flat Rate VAT (%)</label>
+                                <input id="inp-hmrc" type="number" min="0" step="0.1" class="w-full bg-[#0f1b2f] border border-white/10 rounded px-2 py-1 text-sm text-white placeholder:text-white/40" placeholder="Enter percentage">
+                                <p class="mt-2 text-[11px] text-white/40">Applied to total revenue and deducted from net profit.</p>
+                            </div>
+
+                            <div id="wrap-ebay-perf" class="col-span-1 sm:col-span-2 hidden-rule">
+                                <label for="inp-ebay-perf" class="block text-xs font-medium text-white/60 mb-1">Seller Performance Level</label>
+                                <div class="relative">
+                                    <select id="inp-ebay-perf" class="w-full pl-3 pr-10 py-2 bg-[#0f1b2f] border border-white/10 text-white rounded-lg appearance-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40">
+                                        <option value="top_rated">Top Rated</option>
+                                        <option value="above_standard">Above Standard</option>
+                                        <option value="below_standard">Below Standard</option>
+                                    </select>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute right-3 top-2.5 size-4 text-white/40 pointer-events-none"><path d="m6 9 6 6 6-6"></path></svg>
+                                </div>
+                            </div>
+
+                            <label id="wrap-int-buyer" class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition hidden-rule">
+                                <input id="inp-int-buyer" type="checkbox" class="size-4 text-blue-400 rounded">
+                                <span class="text-sm font-medium text-white/70">International Buyer</span>
+                            </label>
+
+                            <div id="wrap-promoted" class="p-3 rounded-lg border border-white/10 bg-white/5 hidden-rule">
+                                <label for="inp-promoted" class="block text-xs font-medium text-white/60 mb-1">Promoted Listings Rate (%)</label>
+                                <input id="inp-promoted" placeholder="0" class="w-full bg-[#0f1b2f] border border-white/10 rounded px-2 py-1 text-sm text-white placeholder:text-white/40" type="number">
+                            </div>
+
+                            <div id="wrap-amz-plan" class="col-span-1 sm:col-span-2 space-y-3 p-3 rounded-lg border border-orange-400/30 bg-orange-500/10 hidden-rule">
+                                <div class="flex gap-4">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="amzPlan" value="professional" id="inp-amz-pro" class="text-orange-300">
+                                        <span class="text-sm font-medium text-white/80">Professional Plan</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="amzPlan" value="individual" id="inp-amz-ind" class="text-orange-300">
+                                        <span class="text-sm font-medium text-white/80">Individual Plan</span>
+                                    </label>
+                                </div>
+                                <div id="wrap-amz-amortize" class="flex items-center gap-4 text-sm hidden-rule">
+                                    <label class="flex items-center gap-2">
+                                        <input id="inp-amz-amortize" type="checkbox" class="text-orange-300 rounded">
+                                        <span class="text-white/70">Amortize monthly fee?</span>
+                                    </label>
+                                    <input id="inp-amz-units" type="number" class="w-20 px-2 py-1 text-sm border border-white/10 rounded bg-[#0f1b2f] text-white placeholder:text-white/40 hidden-rule" placeholder="Units/mo">
+                                </div>
+                            </div>
+
+                            <div id="wrap-tiktok-rules" class="space-y-3 p-3 rounded-lg border border-white/10 bg-white/5 hidden-rule">
+                                <div id="wrap-affiliate" class="hidden-rule">
+                                    <label for="inp-affiliate" class="block text-xs font-medium text-white/60 mb-1">Affiliate Commission (%)</label>
+                                    <input id="inp-affiliate" type="number" placeholder="0" class="w-full bg-[#0f1b2f] border border-white/10 rounded px-2 py-1 text-sm text-white placeholder:text-white/40">
+                                </div>
+                                <div>
+                                    <label for="inp-flash-sale" class="block text-xs font-medium text-white/60 mb-1">Flash Sale Discount (%)</label>
+                                    <input id="inp-flash-sale" type="number" min="0" max="100" step="0.1" placeholder="0" class="w-full bg-[#0f1b2f] border border-white/10 rounded px-2 py-1 text-sm text-white placeholder:text-white/40">
+                                    <p class="mt-2 text-[11px] text-white/40">Discount is applied to total revenue before fees.</p>
+                                </div>
+                            </div>
+
+                            <label id="wrap-etsy-ads" class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 cursor-pointer hover:bg-white/10 transition hidden-rule">
+                                <input id="inp-etsy-ads" type="checkbox" class="size-4 text-blue-400 rounded">
+                                <span class="text-sm font-medium text-white/70">Offsite Ads Applied</span>
+                            </label>
+
+                        </div>
+                    </section>
+
+                    <!-- Sales & Cost Details -->
+                    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white/5 p-5 rounded-xl shadow-soft border border-white/10 space-y-4 backdrop-blur-sm">
+                            <h2 class="text-sm font-semibold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle></svg> Sale Details
+                            </h2>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="inp-price" class="block text-xs font-medium text-white/60 mb-1">Item Price</label>
+                                    <div class="relative">
+                                        <input id="inp-price" class="w-full rounded-lg border border-white/10 bg-[#0f1b2f] py-2 text-white transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/40 pl-9 pr-3" placeholder="0.00" type="number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-2.5 size-4 text-white/40"><path d="M18 7c0-5.333-8-5.333-8 0"></path><path d="M10 7v14"></path><path d="M6 21h12"></path><path d="M6 13h10"></path></svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="inp-shipping-charged" class="block text-xs font-medium text-white/60 mb-1">Shipping Charged</label>
+                                    <div class="relative">
+                                        <input id="inp-shipping-charged" class="w-full rounded-lg border border-white/10 bg-[#0f1b2f] py-2 text-white transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/40 pl-9 pr-3" placeholder="0.00" type="number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-2.5 size-4 text-white/40"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path><path d="M15 18H9"></path><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path><circle cx="17" cy="18" r="2"></circle><circle cx="7" cy="18" r="2"></circle></svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="inp-qty" class="block text-xs font-medium text-white/60 mb-1">Quantity Sold</label>
+                                    <div class="relative">
+                                        <input id="inp-qty" class="w-full rounded-lg border border-white/10 bg-[#0f1b2f] py-2 text-white transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/40 px-3" placeholder="0.00" type="number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-5 rounded-xl shadow-soft border border-white/10 space-y-4 backdrop-blur-sm">
+                            <h2 class="text-sm font-semibold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><path d="m7.5 4.27 9 5.15"></path></svg> Unit Costs
+                            </h2>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="inp-cost" class="block text-xs font-medium text-white/60 mb-1">Item Cost</label>
+                                    <div class="relative">
+                                        <input id="inp-cost" class="w-full rounded-lg border border-white/10 bg-[#0f1b2f] py-2 text-white transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/40 pl-9 pr-3" placeholder="0.00" type="number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-2.5 size-4 text-white/40"><path d="M18 7c0-5.333-8-5.333-8 0"></path><path d="M10 7v14"></path><path d="M6 21h12"></path><path d="M6 13h10"></path></svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="inp-shipping-cost" class="block text-xs font-medium text-white/60 mb-1">Shipping Cost</label>
+                                    <div class="relative">
+                                        <input id="inp-shipping-cost" class="w-full rounded-lg border border-white/10 bg-[#0f1b2f] py-2 text-white transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/40 pl-9 pr-3" placeholder="0.00" type="number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-2.5 size-4 text-white/40"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path><path d="M15 18H9"></path><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path><circle cx="17" cy="18" r="2"></circle><circle cx="7" cy="18" r="2"></circle></svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="inp-other-cost" class="block text-xs font-medium text-white/60 mb-1">Other (Pack/Prep)</label>
+                                    <div class="relative">
+                                        <input id="inp-other-cost" class="w-full rounded-lg border border-white/10 bg-[#0f1b2f] py-2 text-white transition-all focus:border-primary/60 focus:ring-2 focus:ring-primary/40 pl-9 pr-3" placeholder="0.00" type="number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-2.5 size-4 text-white/40"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><path d="m7.5 4.27 9 5.15"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Results Sidebar -->
+                <div class="lg:col-span-5">
+                    <div class="sticky top-8 rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-soft backdrop-blur">
+                        <div class="mb-8 text-center p-6 rounded-xl bg-white/5 border border-white/10">
+                            <div class="text-white/60 text-sm font-medium mb-1 uppercase tracking-widest">Net Profit</div>
+                            <div id="out-net-profit" class="text-5xl font-bold tracking-tight flex items-center justify-center gap-2 text-emerald-400">...</div>
+                            <div class="flex justify-center gap-4 mt-3 text-sm">
+                                <span id="out-margin" class="px-2 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-300">...</span>
+                                <span id="out-roi" class="px-2 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300">...</span>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div class="p-3 rounded-lg bg-white/10">
+                                    <div class="text-xs text-white/50 uppercase">Revenue</div>
+                                    <div id="out-revenue" class="font-semibold text-lg">...</div>
+                                </div>
+                                <div class="p-3 rounded-lg bg-white/5">
+                                    <div class="text-xs text-white/50 uppercase">Total Costs</div>
+                                    <div id="out-total-costs" class="font-semibold text-lg">...</div>
+                                </div>
+                            </div>
+                            
+                            <div id="wrap-flash-sale-out" class="p-4 rounded-xl border border-blue-400/30 bg-blue-500/10 flex flex-col gap-1 hidden-rule">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-semibold text-blue-200 uppercase tracking-wide">Flash Sale Discount</span>
+                                    <span id="out-flash-sale" class="text-lg font-semibold text-blue-100">...</span>
+                                </div>
+                                <p id="out-flash-sale-desc" class="text-xs text-blue-100/80">...</p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-sm font-semibold text-white/60 uppercase tracking-wider mb-3 flex justify-between">
+                                    <span>Platform Fees</span>
+                                    <span id="out-total-fees" class="text-white">...</span>
+                                </h3>
+                                <div id="out-fees-list" class="space-y-2 bg-white/10 p-4 rounded-xl border border-white/10 text-sm">
+                                    <!-- Populated dynamically -->
+                                </div>
+                                
+                                <div id="wrap-hmrc-out" class="p-4 mt-3 rounded-xl border border-emerald-400/40 bg-emerald-500/10 flex flex-col gap-1 hidden-rule">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-semibold text-emerald-200 uppercase tracking-wide">HMRC Flat Rate VAT Due</span>
+                                        <span id="out-hmrc-due" class="text-lg font-semibold text-emerald-100">...</span>
+                                    </div>
+                                    <p id="out-hmrc-desc" class="text-xs text-emerald-100/80">...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <footer class="mt-12 border-t border-white/10 pt-6 text-center text-xs text-white/40 pb-24 lg:pb-6">
+                &copy; <span id="current-year">2026</span> Powered by Inam Calculations. All rights reserved.
+            </footer>
+
+            <!-- Mobile Sticky Footer -->
+            <div class="fixed bottom-0 left-0 right-0 bg-[#0f0509] border-t border-white/10 p-4 z-50 lg:hidden safe-area-bottom">
+                <div class="flex items-center justify-between max-w-7xl mx-auto">
+                    <div>
+                        <div class="text-xs text-white/40 uppercase tracking-wider font-bold">Net Profit</div>
+                        <div id="mob-net-profit" class="text-2xl font-bold tracking-tight text-emerald-400">...</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-white/40 uppercase tracking-wider font-bold">Margin</div>
+                        <div id="mob-margin" class="text-xl font-bold text-emerald-300">...</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Set dynamic year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // PnL Configuration Data
+        const oe = {
+            currency_meta: {
+                US: { currency: "USD", vat_or_sales_tax_on_fees: !1 },
+                UK: { currency: "GBP", vat_or_sales_tax_on_fees: !0, vat_rate: .2, regulatory_operating_fee_rate: .0035 },
+                DE: { currency: "EUR", vat_or_sales_tax_on_fees: !0, vat_rate: .19 },
+                AU: { currency: "AUD", vat_or_sales_tax_on_fees: !0, vat_rate: .1 },
+                CA: { currency: "CAD", vat_or_sales_tax_on_fees: !1 }
+            },
+            platforms: {
+                ebay: {
+                    effective_date: "2025-02-14",
+                    regions: {
+                        US: {
+                            currency: "USD", per_order_fee: [{ condition: "default", amount: .3 }, { condition: "athletic_shoes_price_gte_150", amount: 0 }], international_fee_percent: 1.65,
+                            categories: [
+                                { id: "DEFAULT", name: "Most categories", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .136 }, { above: 7500, rate: .0235 }] } },
+                                { id: "BOOKS_MOVIES_MUSIC_EXCL_VINYL", name: "Books, Movies & TV, Music (except Vinyl)", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .153 }, { above: 7500, rate: .0235 }] } },
+                                { id: "TRADING_CARDS_AND_CCG", name: "Sports Trading Cards & Collectible Card Games", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .1325 }, { above: 7500, rate: .0235 }] } },
+                                { id: "JEWELRY_NO_WATCHES", name: "Jewelry (except Watches, Parts & Accessories)", rate_structure: { type: "tiered", tiers: [{ up_to: 5e3, rate: .15 }, { above: 5e3, rate: .09 }] } },
+                                { id: "WATCHES_PARTS_ACCESSORIES", name: "Watches, Parts & Accessories", rate_structure: { type: "multi_tier", tiers: [{ up_to: 1e3, rate: .15 }, { over_from: 1e3, up_to: 7500, rate: .065 }, { above: 7500, rate: .03 }] } },
+                                { id: "WOMENS_BAGS_HANDBAGS", name: "Women's Bags & Handbags", rate_structure: { type: "tiered", tiers: [{ up_to: 2e3, rate: .15 }, { above: 2e3, rate: .09 }] } },
+                                { id: "ATHLETIC_SHOES", name: "Athletic Shoes", rate_structure: { type: "price_switch", rules: [{ price_lt: 150, rate: .136 }, { price_gte: 150, rate: .08 }] } },
+                                { id: "GUITARS_BASES", name: "Musical Instruments & Gear > Guitars & Basses", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .067 }, { above: 7500, rate: .0235 }] } },
+                                { id: "HEAVY_EQUIPMENT_AND_SELECTED_BI", name: "Selected Business & Industrial", rate_structure: { type: "tiered", tiers: [{ up_to: 15e3, rate: .03 }, { above: 15e3, rate: .005 }] } },
+                                { id: "NFTS", name: "NFT categories", rate_structure: { type: "flat", rate: .05 } },
+                                { id: "BULLION", name: "Bullion", rate_structure: { type: "price_switch", rules: [{ price_lte: 7500, rate: .136 }, { price_gt: 7500, rate: .07 }] } }
+                            ]
+                        },
+                        UK: {
+                            currency: "GBP", per_order_fee: [{ condition: "default", amount: .3 }], international_fee_percent: 3, regulatory_operating_fee_percent: .35,
+                            categories: [
+                                { id: "DEFAULT", name: "Most categories", rate_structure: { type: "flat", rate: .129 } }, 
+                                { id: "ART_NFT", name: "Art NFTs", rate_structure: { type: "flat", rate: .05 } },
+                                { id: "ANTIQUES", name: "Antiques", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "ART_OTHER", name: "Art (non-NFT)", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "BABY", name: "Baby", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "BOOKS_COMICS_MAGAZINES", name: "Books, Comics & Magazines", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "BUSINESS_OFFICE_INDUSTRIAL", name: "Business, Office & Industrial", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "CAMERAS_PHOTOGRAPHY", name: "Cameras & Photography", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "DIGITAL_CAMERAS_CAMCORDERS", name: "Camcorders & Digital Cameras", rate_structure: { type: "multi_tier", tiers: [{ up_to: 1e3, rate: .069 }, { above: 1e3, rate: .03 }] } },
+                                { id: "CLOTHING_SHOES_ACCESSORIES", name: "Clothes, Shoes & Accessories", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "WOMENS_BAGS_HANDBAGS", name: "Women's Bags & Handbags", rate_structure: { type: "price_switch", rules: [{ price_lte: 800, rate: .129 }, { price_gt: 800, rate: .07 }] } },
+                                { id: "TRAINERS", name: "Men's & Women's Trainers", rate_structure: { type: "price_switch", rules: [{ price_lt: 100, rate: .119 }, { price_gte: 100, rate: .07 }] } },
+                                { id: "COINS", name: "Coins", rate_structure: { type: "price_switch", rules: [{ price_lte: 450, rate: .109 }, { price_gt: 450, rate: .03 }] } },
+                                { id: "COMPUTERS_TABLETS_NETWORKING", name: "Computers, Tablets & Networking", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "LAPTOPS_TABLETS", name: "Desktops/Laptops/Tablets", rate_structure: { type: "multi_tier", tiers: [{ up_to: 1e3, rate: .069 }, { above: 1e3, rate: .03 }] } },
+                                { id: "CRAFTS", name: "Crafts", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "DOLLS_BEARS", name: "Dolls & Bears", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "EVENT_TICKETS", name: "Event Tickets", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "FILMS_TV", name: "Films & TV", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "HAIR_EXTENSIONS_WIGS", name: "Hair Extensions & Wigs", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "E_SMOKING_ACCESSORIES", name: "Electronic Smoking Accessories", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "HOLIDAYS_TRAVEL", name: "Holidays & Travel", rate_structure: { type: "price_switch", rules: [{ price_lte: 650, rate: .079 }, { price_gt: 650, rate: .03 }] } },
+                                { id: "HOME_FURNITURE_DIY_GENERAL", name: "Home, Furniture & DIY", rate_structure: { type: "price_switch", rules: [{ price_lte: 500, rate: .119 }, { price_gt: 500, rate: .079 }] } },
+                                { id: "APPLIANCES_TOOLS", name: "Appliances & DIY Tools", rate_structure: { type: "price_switch", rules: [{ price_lte: 400, rate: .069 }, { price_gt: 400, rate: .03 }] } },
+                                { id: "POWER_STRIPS_SURGE", name: "Power Strips & Surge", rate_structure: { type: "price_switch", rules: [{ price_lte: 250, rate: .099 }, { price_gt: 250, rate: .079 }] } },
+                                { id: "FURNITURE_BATH", name: "Furniture & Bath", rate_structure: { type: "multi_tier", tiers: [{ up_to: 500, rate: .109 }, { over_from: 500, up_to: 1e3, rate: .079 }, { above: 1e3, rate: .03 }] } },
+                                { id: "JEWELLERY_WATCHES", name: "Jewellery & Watches", rate_structure: { type: "price_switch", rules: [{ price_lte: 1e3, rate: .149 }, { price_gt: 1e3, rate: .04 }] } },
+                                { id: "WATCHES_PARTS_ACCESSORIES", name: "Watches, Parts & Accessories", rate_structure: { type: "price_switch", rules: [{ price_lte: 750, rate: .129 }, { price_gt: 750, rate: .03 }] } },
+                                { id: "MOBILE_PHONES_GENERAL", name: "Mobile Phones (general)", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "SMARTPHONES", name: "Smartphones", rate_structure: { type: "multi_tier", tiers: [{ up_to: 1e3, rate: .069 }, { above: 1e3, rate: .03 }] } },
+                                { id: "MUSIC", name: "Music", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "MUSICAL_INSTRUMENTS_DJ", name: "Musical Instruments & DJ", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "PET_SUPPLIES", name: "Pet Supplies", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "POTTERY_CERAMICS_GLASS", name: "Pottery, Ceramics & Glass", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "SOUND_VISION_GENERAL", name: "Sound & Vision", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "TV_HEADPHONES_AUDIO", name: "TV, Headphones, Audio", rate_structure: { type: "multi_tier", tiers: [{ up_to: 1e3, rate: .069 }, { above: 1e3, rate: .03 }] } },
+                                { id: "SPORTING_GOODS", name: "Sporting Goods", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "SPORTS_MEMORABILIA", name: "Sports Memorabilia", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "STAMPS", name: "Stamps", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "TOYS_GAMES", name: "Toys & Games", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "CCG_NFTS", name: "CCG/Trading Card NFTs", rate_structure: { type: "flat", rate: .05 } }
+                            ]
+                        },
+                        DE: {
+                            currency: "EUR", per_order_fee: [{ condition: "default", amount: .35 }],
+                            categories: [
+                                { id: "DEFAULT", name: "Most categories", rate_structure: { type: "flat", rate: .11 } },
+                                { id: "MODE", name: "Clothing & Accessories", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "SCHUHE", name: "Shoes", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "UHREN", name: "Watches", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "SCHMUCK", name: "Jewelry", rate_structure: { type: "flat", rate: .149 } },
+                                { id: "HAUSHALT_GARTEN", name: "Home & Garden", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "ELEKTRONIK_ALLG", name: "Consumer Electronics", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "HANDYS_SMARTPHONES", name: "Mobile Phones", rate_structure: { type: "flat", rate: .069 } },
+                                { id: "COMPUTER_TABLETS", name: "Computers & Tablets", rate_structure: { type: "flat", rate: .069 } },
+                                { id: "FOTO_VIDEO", name: "Cameras & Photo", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "SPORT_FREIZEIT", name: "Sporting Goods", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "SPIELZEUG", name: "Toys", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "SAMMLER", name: "Collectibles", rate_structure: { type: "flat", rate: .109 } }
+                            ]
+                        },
+                        AU: {
+                            currency: "AUD", per_order_fee: [{ condition: "default", amount: .33 }],
+                            categories: [
+                                { id: "DEFAULT", name: "Most categories", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "DVD_FILM_TV", name: "DVDs, Films & TV", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "HEALTH_BEAUTY", name: "Health & Beauty", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "HOME_FURNITURE_DIY", name: "Home, Furniture & DIY", rate_structure: { type: "flat", rate: .119 } },
+                                { id: "JEWELLERY_WATCHES", name: "Jewellery & Watches", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "CAMS_PHOTO", name: "Cameras & Photography", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "COMPUTERS_NETWORKING", name: "Computers, Tablets & Networking", rate_structure: { type: "flat", rate: .069 } },
+                                { id: "MOBILES_COMM", name: "Mobile Phones", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "MUSIC", name: "Music", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "MUSICAL_INSTR", name: "Musical Instruments", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "PET_SUPPLIES", name: "Pet Supplies", rate_structure: { type: "flat", rate: .129 } },
+                                { id: "SOUND_VISION", name: "Sound & Vision", rate_structure: { type: "flat", rate: .099 } },
+                                { id: "SPORTING_GOODS", name: "Sporting Goods", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "TOYS_GAMES", name: "Toys & Games", rate_structure: { type: "flat", rate: .109 } },
+                                { id: "VEHICLE_PARTS", name: "Vehicle Parts & Accessories", rate_structure: { type: "flat", rate: .099 } }
+                            ]
+                        },
+                        CA: {
+                            currency: "CAD", per_order_fee: [{ condition: "order_total_lte_10", amount: .3 }, { condition: "order_total_gt_10", amount: .4 }], international_fee_percent: 1.65,
+                            categories: [
+                                { id: "DEFAULT", name: "Most categories", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .136 }, { above: 7500, rate: .0235 }] } },
+                                { id: "BOOKS_MOVIES_MUSIC_EXCL_VINYL", name: "Books, Movies, Music (except Vinyl)", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .153 }, { above: 7500, rate: .0235 }] } },
+                                { id: "SELECT_COLLECTIBLES_CARDS", name: "Sports Trading Cards & CCG / select collectibles", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .1325 }, { above: 7500, rate: .0235 }] } },
+                                { id: "GUITARS_BASES", name: "Musical Instruments & Gear > Guitars & Basses", rate_structure: { type: "tiered", tiers: [{ up_to: 7500, rate: .067 }, { above: 7500, rate: .0235 }] } },
+                                { id: "ATHLETIC_SHOES", name: "Athletic Shoes", rate_structure: { type: "price_switch", rules: [{ price_lt: 150, rate: .136 }, { price_gte: 150, rate: .08 }] } },
+                                { id: "WOMENS_BAGS_HANDBAGS", name: "Women's Bags & Handbags", rate_structure: { type: "price_switch", rules: [{ price_lte: 2e3, rate: .15 }, { price_gt: 2e3, rate: .09 }] } },
+                                { id: "WATCHES_PARTS_ACCESSORIES", name: "Watches, Parts & Accessories", rate_structure: { type: "multi_tier", tiers: [{ up_to: 1e3, rate: .15 }, { over_from: 1e3, up_to: 7500, rate: .065 }, { above: 7500, rate: .03 }] } },
+                                { id: "NFTS", name: "NFT categories", rate_structure: { type: "flat", rate: .05 } },
+                                { id: "BULLION", name: "Bullion", rate_structure: { type: "price_switch", rules: [{ price_lte: 7500, rate: .136 }, { price_gt: 7500, rate: .07 }] } }
+                            ]
+                        }
+                    }
+                },
+                amazon: {
+                    regions: {
+                        US: {
+                            currency: "USD", selling_plans: { individual_per_unit_fee: .99, professional_monthly_fee: 39.99 },
+                            referral_categories: [
+                                { id: "EVERYTHING_ELSE", name: "Everything Else", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "AMAZON_DEVICE_ACCESSORIES", name: "Amazon Device Accessories", rate_structure: { type: "flat", rate: .45 }, min_per_item: .3 },
+                                { id: "APPAREL", name: "Apparel & Accessories", rate_structure: { type: "price_switch", rules: [{ price_lt: 15, rate: .05 }, { price_gte: 15, rate: .1 }] }, min_per_item: .3 },
+                                { id: "AUTOMOTIVE", name: "Automotive & Powersports", rate_structure: { type: "flat", rate: .12 }, min_per_item: .3 },
+                                { id: "BABY_PRODUCTS", name: "Baby Products (excl. Clothing)", rate_structure: { type: "price_switch", rules: [{ price_lte: 10, rate: .08 }, { price_gt: 10, rate: .15 }] }, min_per_item: .3 },
+                                { id: "BEAUTY_HEALTH_PERSONAL_CARE", name: "Beauty/Health/Personal Care", rate_structure: { type: "price_switch", rules: [{ price_lte: 10, rate: .08 }, { price_gt: 10, rate: .15 }] }, min_per_item: .3 },
+                                { id: "BOOKS_MEDIA_SOFTWARE_VIDEO", name: "Books / Music / Video / DVD / Software / Video Games", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "BUSINESS_INDUSTRIAL_SCIENTIFIC", name: "Business, Industrial & Scientific", rate_structure: { type: "flat", rate: .12 }, min_per_item: .3 },
+                                { id: "CONSUMER_ELECTRONICS", name: "Consumer Electronics", rate_structure: { type: "flat", rate: .08 }, min_per_item: .3 },
+                                { id: "ELECTRONIC_ACCESSORIES", name: "Electronics Accessories", rate_structure: { type: "price_switch", rules: [{ price_lte: 100, rate: .15 }, { price_gt: 100, rate: .08 }] }, min_per_item: .3 },
+                                { id: "EYEWEAR", name: "Eyewear", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "FINE_ART", name: "Fine Art", rate_structure: { type: "multi_tier", tiers: [{ up_to: 100, rate: .2 }, { over_from: 100, up_to: 1e3, rate: .15 }, { over_from: 1e3, up_to: 5e3, rate: .1 }, { above: 5e3, rate: .05 }] } },
+                                { id: "FOOTWEAR", name: "Footwear", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "FULL_SIZE_APPLIANCES", name: "Full-size Appliances", rate_structure: { type: "flat", rate: .08 }, min_per_item: .3 },
+                                { id: "FURNITURE", name: "Furniture (excl. mattresses)", rate_structure: { type: "price_switch", rules: [{ price_lte: 200, rate: .15 }, { price_gt: 200, rate: .1 }] }, min_per_item: .3 },
+                                { id: "GIFT_CARDS", name: "Gift Cards", rate_structure: { type: "flat", rate: .2 } },
+                                { id: "GROCERY_GOURMET", name: "Grocery & Gourmet", rate_structure: { type: "price_switch", rules: [{ price_lte: 15, rate: .08 }, { price_gt: 15, rate: .15 }] } },
+                                { id: "HOME_KITCHEN", name: "Home & Kitchen", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "JEWELRY", name: "Jewelry", rate_structure: { type: "price_switch", rules: [{ price_lte: 250, rate: .2 }, { price_gt: 250, rate: .05 }] }, min_per_item: .3 },
+                                { id: "LAWN_GARDEN", name: "Lawn & Garden", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "LAWN_MOWERS_SNOW_THROWERS", name: "Lawn Mowers & Snow Throwers", rate_structure: { type: "price_switch", rules: [{ price_lte: 500, rate: .15 }, { price_gt: 500, rate: .08 }] }, min_per_item: .3 },
+                                { id: "LUGGAGE", name: "Luggage", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "MATTRESSES", name: "Mattresses", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "PET_SUPPLIES", name: "Pet Supplies", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "SPORTS_OUTDOORS", name: "Sports & Outdoors", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "TIRES", name: "Tires", rate_structure: { type: "flat", rate: .1 }, min_per_item: .3 },
+                                { id: "TOYS_GAMES", name: "Toys & Games", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "VIDEO_GAME_CONSOLES", name: "Video Game Consoles", rate_structure: { type: "flat", rate: .08 } },
+                                { id: "WATCHES", name: "Watches", rate_structure: { type: "price_switch", rules: [{ price_lte: 1500, rate: .16 }, { price_gt: 1500, rate: .03 }] }, min_per_item: .3 }
+                            ]
+                        },
+                        UK: {
+                            currency: "GBP", selling_plans: { individual_per_unit_fee: .75, professional_monthly_fee: 25, vat_on_plan_fee: !0 },
+                            referral_categories: [
+                                { id: "EVERYTHING_ELSE", name: "Everything Else", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "AMAZON_DEVICE_ACCESSORIES", name: "Amazon Device Accessories", rate_structure: { type: "flat", rate: .459 }, min_per_item: .25 },
+                                { id: "AUTOMOTIVE_TIERS", name: "Automotive & Powersports", rate_structure: { type: "price_switch", rules: [{ price_lte: 45, rate: .153 }, { price_gt: 45, rate: .0918 }] }, min_per_item: .25 },
+                                { id: "BABY_PRODUCTS", name: "Baby (excl. clothing)", rate_structure: { type: "price_switch", rules: [{ price_lte: 10, rate: .08 }, { price_gt: 10, rate: .153 }] }, min_per_item: .25 },
+                                { id: "BAGS_BACKPACKS", name: "Backpacks & Handbags", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "CLOTHING_ACCESSORIES", name: "Clothing & Accessories", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "EYEWEAR", name: "Eyewear (incl. non-prescription)", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "FOOTWEAR_FBA_SFP_SPLIT", name: "Footwear (FBA/SFP split)", rate_structure: { type: "price_switch", rules: [{ price_lte: 40, rate: .153 }, { price_gt: 40, rate: .0714 }] }, min_per_item: .25 },
+                                { id: "FURNITURE", name: "Furniture (excl. mattresses)", rate_structure: { type: "price_switch", rules: [{ price_lte: 175, rate: .153 }, { price_gt: 175, rate: .102 }] }, min_per_item: .25 },
+                                { id: "GROCERY_GOURMET", name: "Grocery & Gourmet", rate_structure: { type: "price_switch", rules: [{ price_lte: 10, rate: .0816 }, { price_gt: 10, rate: .153 }] }, min_per_item: .25 },
+                                { id: "HOME_KITCHEN", name: "Home & Kitchen", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "JEWELLERY", name: "Jewellery", rate_structure: { type: "price_switch", rules: [{ price_lte: 225, rate: .204 }, { price_gt: 225, rate: .051 }] }, min_per_item: .25 },
+                                { id: "MUSIC_DVD_VHS", name: "Music / VHS / DVD", rate_structure: { type: "flat", rate: .153 } },
+                                { id: "SOFTWARE", name: "Software", rate_structure: { type: "flat", rate: .153 } },
+                                { id: "SPORTS_OUTDOORS", name: "Sports & Outdoors", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "TOOLS_HOME_IMPROVEMENT", name: "Tools & Home Improvement", rate_structure: { type: "flat", rate: .1326 }, min_per_item: .25 },
+                                { id: "TOYS_GAMES", name: "Toys & Games", rate_structure: { type: "flat", rate: .153 }, min_per_item: .25 },
+                                { id: "TYRES", name: "Tyres", rate_structure: { type: "flat", rate: .0714 }, min_per_item: .25 },
+                                { id: "VIDEO_GAMES_ACCESSORIES", name: "Video Games & Accessories", rate_structure: { type: "flat", rate: .153 } },
+                                { id: "VIDEO_GAME_CONSOLES", name: "Video Game Consoles", rate_structure: { type: "flat", rate: .0816 } },
+                                { id: "WATCHES", name: "Watches", rate_structure: { type: "price_switch", rules: [{ price_lte: 225, rate: .153 }, { price_gt: 225, rate: .051 }] }, min_per_item: .25 }
+                            ]
+                        },
+                        DE: {
+                            currency: "EUR", selling_plans: { individual_per_unit_fee: .99, professional_monthly_fee: 39 },
+                            referral_categories: [
+                                { id: "EVERYTHING_ELSE", name: "Everything Else", rate_structure: { type: "flat", rate: .15 } },
+                                { id: "AMAZON_DEVICE_ACCESSORIES", name: "Amazon Device Accessories", rate_structure: { type: "flat", rate: .45 }, min_per_item: .3 },
+                                { id: "AUTOMOTIVE_TIERS", name: "Automotive & Powersports", rate_structure: { type: "price_switch", rules: [{ price_lte: 50, rate: .15 }, { price_gt: 50, rate: .09 }] } },
+                                { id: "GROCERY_GOURMET", name: "Grocery & Gourmet", rate_structure: { type: "price_switch", rules: [{ price_lte: 10, rate: .08 }, { price_gt: 10, rate: .15 }] } },
+                                { id: "CONSUMER_ELECTRONICS", name: "Consumer Electronics", rate_structure: { type: "flat", rate: .08 } },
+                                { id: "ELECTRONIC_ACCESSORIES", name: "Electronics Accessories", rate_structure: { type: "price_switch", rules: [{ price_lte: 100, rate: .15 }, { price_gt: 100, rate: .08 }] } },
+                                { id: "JEWELRY", name: "Jewelry", rate_structure: { type: "price_switch", rules: [{ price_lte: 250, rate: .2 }, { price_gt: 250, rate: .05 }] } },
+                                { id: "FURNITURE", name: "Furniture", rate_structure: { type: "price_switch", rules: [{ price_lte: 200, rate: .15 }, { price_gt: 200, rate: .1 }] } },
+                                { id: "WATCHES", name: "Watches", rate_structure: { type: "price_switch", rules: [{ price_lte: 1500, rate: .16 }, { price_gt: 1500, rate: .03 }] } }
+                            ]
+                        },
+                        AU: {
+                            currency: "AUD", selling_plans: { individual_per_unit_fee: .99, professional_monthly_fee: 49.95 },
+                            referral_categories: [
+                                { id: "EVERYTHING_ELSE", name: "Most categories", rate_structure: { type: "flat", rate: .15 } },
+                                { id: "CONSUMER_ELECTRONICS", name: "Consumer Electronics", rate_structure: { type: "flat", rate: .08 } },
+                                { id: "ELECTRONIC_ACCESSORIES", name: "Electronics Accessories", rate_structure: { type: "price_switch", rules: [{ price_lte: 100, rate: .15 }, { price_gt: 100, rate: .08 }] } },
+                                { id: "GROCERY_GOURMET", name: "Grocery & Gourmet", rate_structure: { type: "price_switch", rules: [{ price_lte: 15, rate: .08 }, { price_gt: 15, rate: .15 }] } }
+                            ]
+                        },
+                        CA: {
+                            currency: "CAD", selling_plans: { individual_per_unit_fee: 1.49, professional_monthly_fee: 29.99 },
+                            referral_categories: [
+                                { id: "EVERYTHING_ELSE", name: "Everything Else", rate_structure: { type: "flat", rate: .15 }, min_per_item: .3 },
+                                { id: "CONSUMER_ELECTRONICS", name: "Consumer Electronics", rate_structure: { type: "flat", rate: .08 }, min_per_item: .3 },
+                                { id: "ELECTRONIC_ACCESSORIES", name: "Electronics Accessories", rate_structure: { type: "price_switch", rules: [{ price_lte: 100, rate: .15 }, { price_gt: 100, rate: .08 }] }, min_per_item: .3 },
+                                { id: "GROCERY_GOURMET", name: "Grocery & Gourmet", rate_structure: { type: "price_switch", rules: [{ price_lte: 15, rate: .08 }, { price_gt: 15, rate: .15 }] } },
+                                { id: "JEWELRY", name: "Jewelry", rate_structure: { type: "price_switch", rules: [{ price_lte: 250, rate: .2 }, { price_gt: 250, rate: .05 }] }, min_per_item: .3 },
+                                { id: "WATCHES", name: "Watches", rate_structure: { type: "price_switch", rules: [{ price_lte: 1500, rate: .16 }, { price_gt: 1500, rate: .03 }] } }
+                            ]
+                        }
+                    }
+                },
+                etsy: {
+                    regions: {
+                        US: { currency: "USD", fees: { listing_fee_per_item: .2, transaction_fee_rate: .065, payment_processing: { percent: .03, fixed: .25 }, offsite_ads: { rate_small_sellers: .15, rate_high_traffic: .12 }, regulatory_or_vat_on_fees: !1 } },
+                        UK: { currency: "GBP", fees: { listing_fee_per_item_gbp_equiv: .16, transaction_fee_rate: .065, payment_processing: { percent: .04, fixed: .2 }, offsite_ads: { rate_small_sellers: .15, rate_high_traffic: .12 }, vat_on_fees: !0 } },
+                        DE: { currency: "EUR", fees: { listing_fee_per_item_eur_equiv: .18, transaction_fee_rate: .065, payment_processing: { percent: .04, fixed: .3 }, offsite_ads: { rate_small_sellers: .15, rate_high_traffic: .12 }, vat_on_fees: !0 } },
+                        AU: { currency: "AUD", fees: { listing_fee_per_item_aud_equiv: .27, transaction_fee_rate: .065, payment_processing: { percent: .03, fixed: .25 }, offsite_ads: { rate_small_sellers: .15, rate_high_traffic: .12 }, gst_on_fees: !0 } },
+                        CA: { currency: "CAD", fees: { listing_fee_per_item_cad_equiv: .27, transaction_fee_rate: .065, payment_processing: { percent: .03, fixed: .25 }, offsite_ads: { rate_small_sellers: .15, rate_high_traffic: .12 }, sales_tax_on_fees: !1 } }
+                    }
+                },
+                onbuy: {
+                    regions: {
+                        UK: {
+                            currency: "GBP", commission_structure: {
+                                min_per_order: .25, vat_on_fees: !0,
+                                categories: [
+                                    { id: "DEFAULT", name: "Most categories", rate: .15, min_per_order: .25 },
+                                    { id: "AUTOMOTIVE_TIERED", name: "Automotive (tiered)", tiered: [{ up_to: 1e3, rate: .15 }, { above: 1e3, rate: .09 }], min_per_order: .25 },
+                                    { id: "BOOKS_MEDIA", name: "Books, Music, Video, DVD", rate: .12, min_per_order: .25 },
+                                    { id: "COMPUTERS", name: "Computers & Tablets", rate: .12, min_per_order: .25 },
+                                    { id: "CONSUMER_ELECTRONICS", name: "Consumer Electronics", rate: .12, min_per_order: .25 },
+                                    { id: "FASHION", name: "Fashion", rate: .14, min_per_order: .25 },
+                                    { id: "HEALTH_BEAUTY", name: "Health & Beauty", rate: .13, min_per_order: .25 },
+                                    { id: "HOME_GARDEN", name: "Home & Garden", rate: .12, min_per_order: .25 },
+                                    { id: "JEWELLERY_WATCHES", name: "Jewellery & Watches", rate: .12, min_per_order: .25 },
+                                    { id: "PET_SUPPLIES", name: "Pet Supplies", rate: .12, min_per_order: .25 },
+                                    { id: "SPORTS_OUTDOORS", name: "Sports & Outdoors", rate: .12, min_per_order: .25 },
+                                    { id: "TOYS_GAMES", name: "Toys & Games", rate: .12, min_per_order: .25 }
+                                ]
+                            }
+                        }
+                    }
+                },
+                tiktok_shop: {
+                    regions: {
+                        UK: { currency: "GBP", commission_rate: .09, vat_included_in_rate: !0, affiliate_commission: { supported: !0, seller_set_percent_range: [.01, .8] }, fbt: { supported: !0 } },
+                        US: { currency: "USD", commission_rate: .06, vat_included_in_rate: !1, affiliate_commission: { supported: !0, seller_set_percent_range: [.01, .8] }, fbt: { supported: !0 } }
+                    }
+                }
+            }
+        };
+
+        let state = {
+            platform: "ebay",
+            region: "US",
+            categoryId: "",
+            price: 50,
+            qty: 1,
+            shippingCharged: 0,
+            costPrice: 15,
+            shippingCost: 5,
+            otherCost: 0,
+            hmrcFlatRatePercent: "",
+            flashSaleRate: "",
+            vatRegistered: !1,
+            buyerInternational: !1,
+            ebaySellerPerformance: "above_standard",
+            promotedRate: "",
+            affiliateRate: "",
+            amzPlan: "professional",
+            amortizeAmzPlan: !1,
+            estMonthlyUnits: 100,
+            etsyOffsiteAds: !1
+        };
+
+        function T(val, curr) {
+            return val.toLocaleString("en-US", { style: "currency", currency: curr, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function ce(t, r, i) {
+            if (!r) return 0;
+            switch (r.type) {
+                case "flat": return t * r.rate;
+                case "tiered": {
+                    const o = r.tiers.find(l => l.up_to !== void 0), s = r.tiers.find(l => l.above !== void 0);
+                    if (!o || !s) return t * (r.rate || 0);
+                    const f = o.up_to, h = Math.min(t, f), x = Math.max(0, t - f);
+                    return h * o.rate + x * s.rate;
+                }
+                case "multi_tier": return r.tiers.reduce((o, s) => {
+                    if (s.above !== void 0) return o + Math.max(0, t - s.above) * s.rate;
+                    const f = s.over_from ?? 0, h = s.up_to ?? 1 / 0, x = Math.max(0, Math.min(t, h) - f);
+                    return o + x * s.rate;
+                }, 0);
+                case "price_switch": {
+                    const o = r.rules.find(s => s.price_lt !== void 0 ? i < s.price_lt : s.price_lte !== void 0 ? i <= s.price_lte : s.price_gt !== void 0 ? i > s.price_gt : s.price_gte !== void 0 ? i >= s.price_gte : !1);
+                    return o ? t * o.rate : 0;
+                }
+                default: return 0;
+            }
+        }
+
+        function Ie(t, r) {
+            if (t === "default") return !0;
+            try {
+                if (t.startsWith("order_total_")) {
+                    const i = t.replace("order_total_", "").split("_"), o = i[0], s = parseFloat(i[1]);
+                    if (o === "lte") return r.orderTotal <= s;
+                    if (o === "gt") return r.orderTotal > s;
+                }
+                if (t.includes("_price_") && t === "athletic_shoes_price_gte_150") return r.categoryId === "ATHLETIC_SHOES" && r.price >= 150;
+            } catch { return !1; }
+            return !1;
+        }
+
+        function je({ platform: t, region: r, categoryId: i, price: o, qty: s, shippingCharged: f, costPrice: h, shippingCost: x, otherCost: l, buyerInternational: j, promotedRate: N, affiliateRate: S, amzPlan: v, amortizeAmzPlan: M, estMonthlyUnits: P, etsyOffsiteAds: U, vatRegistered: k, ebaySellerPerformance: y, rData: _, availableCategories: W, currencyMeta: z, hmrcFlatRatePercent: H, flashSaleRate: u }) {
+            if (!_) return { currency: "???", lines: [], totals: { gross_revenue: 0, total_platform_fees: 0, total_costs: 0, net_profit: 0, margin_pct: 0, roi_pct: 0, hmrc_flat_rate_due: 0, flash_sale_discount: 0 } };
+            const w = Number(o) || 0, E = Number(s) || 1, se = Number(f) || 0, Y = w * E + se;
+            const K = t === "tiktok_shop" && u !== "" ? Number(u) : 0;
+            const ie = Number.isFinite(K) ? Math.min(Math.max(K, 0), 100) / 100 : 0;
+            const J = Y * ie, p = Y - J;
+            const $ = H === "" ? 0 : Number(H), ne = Number.isFinite($) ? Math.max($, 0) / 100 : 0;
+            const q = r === "UK" ? p * ne : 0;
+            const d = [];
+            let C = 0, m = 0;
+            const b = W.find(a => a.id === i);
+
+            if (t === "ebay" && b) {
+                const a = ce(p, b.rate_structure, w);
+                if (a) { d.push({ label: "Final Value Fee", amount: a }); m += a; }
+                if (y === "below_standard" && p > 0) { const c = p * .06; d.push({ label: "Performance penalty (+6%)", amount: c, tooltip: "Applied when seller level is Below Standard." }); m += c; }
+                if (y === "top_rated" && a > 0) { const c = a * .1; d.push({ label: "Top Rated discount (10%)", amount: -c, tooltip: "10% discount on the final value fee for Top Rated sellers." }); m -= c; }
+                if (_.per_order_fee) {
+                    const c = _.per_order_fee.find(I => I.condition !== "default" && Ie(I.condition, { categoryId: i, price: w, orderTotal: p }));
+                    const g = _.per_order_fee.find(I => I.condition === "default");
+                    const O = c ? c.amount : g ? g.amount : 0;
+                    d.push({ label: "Per-order fixed fee", amount: O }); m += O;
+                }
+                if (j && _.international_fee_percent) { const c = p * (_.international_fee_percent / 100); d.push({ label: `International fee (${_.international_fee_percent}%)`, amount: c }); m += c; }
+                if (_.regulatory_operating_fee_percent) { const c = p * (_.regulatory_operating_fee_percent / 100); d.push({ label: `Regulatory operating fee (${_.regulatory_operating_fee_percent}%)`, amount: c }); m += c; }
+            }
+            if (t === "amazon" && b) {
+                let a = ce(p, b.rate_structure, w);
+                if (b.min_per_item) a = Math.max(a, b.min_per_item * E);
+                d.push({ label: "Referral fee", amount: a }); m += a;
+                if (v === "individual" && _.selling_plans?.individual_per_unit_fee) { const c = _.selling_plans.individual_per_unit_fee * E; d.push({ label: "Individual plan fee (per-item)", amount: c }); m += c; }
+                else if (v === "professional" && M && _.selling_plans?.professional_monthly_fee) {
+                    const c = Number(P) || 1, g = _.selling_plans.professional_monthly_fee / c * E;
+                    d.push({ label: "Pro plan (amortized)", amount: g, tooltip: `Based on ${c} units/month` }); m += g;
+                }
+            }
+            if (t === "etsy") {
+                const a = _.fees;
+                if (a) {
+                    let c = 0;
+                    if (a.listing_fee_per_item) c = a.listing_fee_per_item * E;
+                    if (r === "UK" && a.listing_fee_per_item_gbp_equiv) c = a.listing_fee_per_item_gbp_equiv * E;
+                    if (r === "DE" && a.listing_fee_per_item_eur_equiv) c = a.listing_fee_per_item_eur_equiv * E;
+                    if (r === "AU" && a.listing_fee_per_item_aud_equiv) c = a.listing_fee_per_item_aud_equiv * E;
+                    if (r === "CA" && a.listing_fee_per_item_cad_equiv) c = a.listing_fee_per_item_cad_equiv * E;
+                    d.push({ label: "Listing fee", amount: c }); m += c;
+                    const g = p * a.transaction_fee_rate; d.push({ label: `Transaction fee (${(a.transaction_fee_rate * 100).toFixed(1)}%)`, amount: g }); m += g;
+                    const O = p * a.payment_processing.percent + a.payment_processing.fixed; d.push({ label: `Payment processing (${(a.payment_processing.percent * 100).toFixed(0)}% + ${a.payment_processing.fixed})`, amount: O }); m += O;
+                }
+            }
+            if (t === "onbuy" && b) {
+                const a = b.tiered ? ce(p, { type: "tiered", tiers: b.tiered }, w) : p * b.rate;
+                const c = b.min_per_order || _.commission_structure.min_per_order || 0;
+                const g = Math.max(a, c); d.push({ label: "Commission", amount: g }); m += g;
+            }
+            if (t === "tiktok_shop") {
+                const a = _.commission_rate, c = p * a;
+                d.push({ label: `Commission (${(a * 100).toFixed(0)}%)`, amount: c, tooltip: _.vat_included_in_rate ? "VAT inclusive" : void 0 });
+                if (_.vat_included_in_rate) C += c; else m += c;
+            }
+            C += m;
+            if (N && t === "ebay") { const a = p * (Number(N) / 100); d.push({ label: `Promoted Listings (${N}%)`, amount: a }); m += a; C += a; }
+            if (S && t === "tiktok_shop" && _.affiliate_commission?.supported) {
+                const a = p * (Number(S) / 100); d.push({ label: `Creator Affiliate (${S}%)`, amount: a });
+                if (_.vat_included_in_rate) C += a; else m += a;
+            }
+            if (U && t === "etsy") {
+                const a = _.fees.offsite_ads.rate_small_sellers, c = p * a;
+                d.push({ label: `Offsite Ads (${(a * 100).toFixed(0)}%)`, amount: c }); m += c; C += c;
+            }
+
+            const B = z, Z = _.vat_on_fees || _.gst_on_fees || (_.fees && (_.fees.vat_on_fees || _.fees.gst_on_fees));
+            if ((Z !== void 0 ? Z : B?.vat_or_sales_tax_on_fees) && B?.vat_rate) {
+                const a = m * B.vat_rate;
+                d.push({ label: `${r === "AU" ? "GST" : "VAT"} on platform fees`, amount: a, tooltip: k ? "Reclaimable if registered" : void 0 });
+                C += a;
+            }
+
+            const L = (Number(h) || 0) * E + (Number(x) || 0) * E + (Number(l) || 0);
+            const Q = C, R = p - Q - L - q, D = p > 0 ? (R / p) * 100 : 0, A = L > 0 ? (R / L) * 100 : 0;
+
+            return { currency: _.currency || "USD", lines: d, totals: { gross_revenue: p, total_platform_fees: Q, total_costs: L, net_profit: R, margin_pct: D, roi_pct: A, hmrc_flat_rate_due: q, flash_sale_discount: J } };
+        }
+
+        function initEvents() {
+            const inpPlatform = document.getElementById('inp-platform');
+            const inpRegion = document.getElementById('inp-region');
+            const inpCategory = document.getElementById('inp-category');
+
+            const inpVatReg = document.getElementById('inp-vat-reg');
+            const inpHmrc = document.getElementById('inp-hmrc');
+            const inpEbayPerf = document.getElementById('inp-ebay-perf');
+            const inpIntBuyer = document.getElementById('inp-int-buyer');
+            const inpPromoted = document.getElementById('inp-promoted');
+            const inpAmzPro = document.getElementById('inp-amz-pro');
+            const inpAmzInd = document.getElementById('inp-amz-ind');
+            const inpAmzAmortize = document.getElementById('inp-amz-amortize');
+            const inpAmzUnits = document.getElementById('inp-amz-units');
+            const inpAffiliate = document.getElementById('inp-affiliate');
+            const inpFlashSale = document.getElementById('inp-flash-sale');
+            const inpEtsyAds = document.getElementById('inp-etsy-ads');
+
+            const inpPrice = document.getElementById('inp-price');
+            const inpShippingCharged = document.getElementById('inp-shipping-charged');
+            const inpQty = document.getElementById('inp-qty');
+            const inpCost = document.getElementById('inp-cost');
+            const inpShippingCost = document.getElementById('inp-shipping-cost');
+            const inpOtherCost = document.getElementById('inp-other-cost');
+
+            // Populate initial dropdowns
+            const platforms = Object.keys(oe.platforms);
+            inpPlatform.innerHTML = platforms.map(p => `<option value="${p}">${p.charAt(0).toUpperCase() + p.slice(1).replace("_", " ")}</option>`).join('');
+
+            function handleInput(field, val) {
+                state[field] = val;
+                updateUI();
+            }
+
+            inpPlatform.addEventListener('change', e => { state.platform = e.target.value; updateUI(); });
+            inpRegion.addEventListener('change', e => { state.region = e.target.value; updateUI(); });
+            inpCategory.addEventListener('change', e => handleInput('categoryId', e.target.value));
+
+            inpVatReg.addEventListener('change', e => handleInput('vatRegistered', e.target.checked));
+            inpHmrc.addEventListener('input', e => handleInput('hmrcFlatRatePercent', e.target.value));
+            inpEbayPerf.addEventListener('change', e => handleInput('ebaySellerPerformance', e.target.value));
+            inpIntBuyer.addEventListener('change', e => handleInput('buyerInternational', e.target.checked));
+            inpPromoted.addEventListener('input', e => handleInput('promotedRate', e.target.value));
+            inpAmzPro.addEventListener('change', e => { if (e.target.checked) handleInput('amzPlan', 'professional'); });
+            inpAmzInd.addEventListener('change', e => { if (e.target.checked) handleInput('amzPlan', 'individual'); });
+            inpAmzAmortize.addEventListener('change', e => handleInput('amortizeAmzPlan', e.target.checked));
+            inpAmzUnits.addEventListener('input', e => handleInput('estMonthlyUnits', e.target.value));
+            inpAffiliate.addEventListener('input', e => handleInput('affiliateRate', e.target.value));
+            inpFlashSale.addEventListener('input', e => handleInput('flashSaleRate', e.target.value));
+            inpEtsyAds.addEventListener('change', e => handleInput('etsyOffsiteAds', e.target.checked));
+
+            inpPrice.addEventListener('input', e => handleInput('price', e.target.value));
+            inpShippingCharged.addEventListener('input', e => handleInput('shippingCharged', e.target.value));
+            inpQty.addEventListener('input', e => handleInput('qty', e.target.value));
+            inpCost.addEventListener('input', e => handleInput('costPrice', e.target.value));
+            inpShippingCost.addEventListener('input', e => handleInput('shippingCost', e.target.value));
+            inpOtherCost.addEventListener('input', e => handleInput('otherCost', e.target.value));
+
+            updateUI(true);
+        }
+
+        function toggleElement(id, show) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (show) el.classList.remove('hidden-rule');
+            else el.classList.add('hidden-rule');
+        }
+
+        function safeSetValue(id, val) {
+            const el = document.getElementById(id);
+            if (el && document.activeElement !== el) {
+                el.value = val;
+            }
+        }
+
+        function updateUI(init = false) {
+            const i = state.platform;
+            const R = oe.platforms[i];
+            const D = Object.keys(R?.regions || {});
+            let A = state.region;
+            if (!D.includes(A)) A = D[0] || "US";
+            state.region = A;
+
+            const a = R.regions[A];
+            const c = oe.currency_meta[A];
+            
+            let g = [];
+            if (a) {
+                if ("categories" in a) g = a.categories;
+                else if ("referral_categories" in a) g = a.referral_categories;
+                else if ("commission_structure" in a && a.commission_structure.categories) g = a.commission_structure.categories;
+            }
+
+            const defaultCat = (g.find(ee => ee.id === "DEFAULT" || ee.id === "EVERYTHING_ELSE") || g[0])?.id || "";
+            let I = state.categoryId;
+            if (!g.some(n => n.id === I)) I = defaultCat;
+            state.categoryId = I;
+
+            const inpPlatform = document.getElementById('inp-platform');
+            const inpRegion = document.getElementById('inp-region');
+            const inpCategory = document.getElementById('inp-category');
+            
+            if (inpPlatform.value !== state.platform) inpPlatform.value = state.platform;
+            
+            if (init || inpRegion.children.length === 0 || inpRegion.dataset.plat !== state.platform) {
+                inpRegion.innerHTML = D.map(l => `<option value="${l}">${l}</option>`).join('');
+                inpRegion.dataset.plat = state.platform;
+            }
+            if (inpRegion.value !== state.region) inpRegion.value = state.region;
+
+            if (init || inpCategory.dataset.platReg !== `${state.platform}-${state.region}`) {
+                inpCategory.innerHTML = g.length === 0 ? `<option>No categories</option>` : g.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+                inpCategory.dataset.platReg = `${state.platform}-${state.region}`;
+            }
+            if (inpCategory.value !== state.categoryId) inpCategory.value = state.categoryId;
+
+            const showAdv = (i === "ebay" || i === "amazon" || i === "tiktok_shop" || i === "etsy" || c?.vat_or_sales_tax_on_fees);
+            toggleElement('section-advanced-rules', showAdv);
+
+            if (showAdv) {
+                toggleElement('wrap-vat-reg', c?.vat_or_sales_tax_on_fees);
+                toggleElement('wrap-hmrc', state.region === "UK");
+                toggleElement('wrap-ebay-perf', i === "ebay");
+                toggleElement('wrap-int-buyer', i === "ebay" && a?.international_fee_percent);
+                toggleElement('wrap-promoted', i === "ebay");
+                toggleElement('wrap-amz-plan', i === "amazon" && a?.selling_plans);
+                toggleElement('wrap-tiktok-rules', i === "tiktok_shop");
+                toggleElement('wrap-etsy-ads', i === "etsy");
+                
+                toggleElement('wrap-amz-amortize', state.amzPlan === "professional");
+                toggleElement('inp-amz-units', state.amortizeAmzPlan);
+                toggleElement('wrap-affiliate', a?.affiliate_commission?.supported);
+            }
+
+            safeSetValue('inp-price', state.price);
+            safeSetValue('inp-shipping-charged', state.shippingCharged);
+            safeSetValue('inp-qty', state.qty);
+            safeSetValue('inp-cost', state.costPrice);
+            safeSetValue('inp-shipping-cost', state.shippingCost);
+            safeSetValue('inp-other-cost', state.otherCost);
+            safeSetValue('inp-hmrc', state.hmrcFlatRatePercent);
+            safeSetValue('inp-promoted', state.promotedRate);
+            safeSetValue('inp-amz-units', state.estMonthlyUnits);
+            safeSetValue('inp-affiliate', state.affiliateRate);
+            safeSetValue('inp-flash-sale', state.flashSaleRate);
+
+            const X = je({
+                platform: i, region: A, categoryId: I, price: state.price, qty: state.qty,
+                shippingCharged: state.shippingCharged, costPrice: state.costPrice, shippingCost: state.shippingCost,
+                otherCost: state.otherCost, buyerInternational: state.buyerInternational, promotedRate: state.promotedRate,
+                affiliateRate: state.affiliateRate, amzPlan: state.amzPlan, amortizeAmzPlan: state.amortizeAmzPlan,
+                estMonthlyUnits: state.estMonthlyUnits, etsyOffsiteAds: state.etsyOffsiteAds, vatRegistered: state.vatRegistered,
+                ebaySellerPerformance: state.ebaySellerPerformance, rData: a, availableCategories: g, currencyMeta: c,
+                hmrcFlatRatePercent: state.hmrcFlatRatePercent, flashSaleRate: state.flashSaleRate
+            });
+
+            const isPos = X.totals.net_profit >= 0;
+            const marginCls = X.totals.margin_pct >= 15 ? "bg-emerald-500/20 text-emerald-300" : "bg-white/10 text-white/70";
+            const roiCls = X.totals.roi_pct >= 30 ? "bg-blue-500/20 text-blue-300" : "bg-white/10 text-white/70";
+            
+            document.getElementById('out-net-profit').innerHTML = T(X.totals.net_profit, X.currency);
+            document.getElementById('out-net-profit').className = `text-5xl font-bold tracking-tight flex items-center justify-center gap-2 ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+            
+            document.getElementById('out-margin').innerText = `${X.totals.margin_pct.toFixed(1)}% Margin`;
+            document.getElementById('out-margin').className = `px-2 py-0.5 rounded-full font-medium ${marginCls}`;
+            
+            document.getElementById('out-roi').innerText = `${X.totals.roi_pct.toFixed(0)}% ROI`;
+            document.getElementById('out-roi').className = `px-2 py-0.5 rounded-full font-medium ${roiCls}`;
+            
+            document.getElementById('out-revenue').innerText = T(X.totals.gross_revenue, X.currency);
+            document.getElementById('out-total-costs').innerText = T(X.totals.total_costs, X.currency);
+            document.getElementById('out-total-fees').innerText = T(X.totals.total_platform_fees, X.currency);
+
+            const linesHtml = X.lines.length === 0 
+                ? `<div class="text-white/40 italic">No fees calculated yet.</div>`
+                : X.lines.map(s => `
+                    <div class="flex justify-between items-center">
+                        <span class="text-white/70 flex items-center gap-1.5">
+                            ${s.label}
+                            ${s.tooltip ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3 text-white/30" aria-label="${s.tooltip}"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>` : ''}
+                        </span>
+                        <span class="font-medium">${T(s.amount, X.currency)}</span>
+                    </div>`).join('');
+            document.getElementById('out-fees-list').innerHTML = linesHtml;
+
+            toggleElement('wrap-flash-sale-out', i === 'tiktok_shop');
+            if (i === 'tiktok_shop') {
+                document.getElementById('out-flash-sale').innerText = T(X.totals.flash_sale_discount, X.currency);
+                let fsDesc = "";
+                if (state.flashSaleRate === "") fsDesc = "Enter a flash sale percentage in Advanced Rules to simulate discounted revenue.";
+                else if (X.totals.flash_sale_discount > 0) fsDesc = `Calculated at ${state.flashSaleRate}% off gross revenue before fees.`;
+                else fsDesc = "Rate set but no revenue yet, so the discount is 0.";
+                document.getElementById('out-flash-sale-desc').innerText = fsDesc;
+            }
+
+            toggleElement('wrap-hmrc-out', A === 'UK');
+            if (A === 'UK') {
+                document.getElementById('out-hmrc-due').innerText = T(X.totals.hmrc_flat_rate_due, X.currency);
+                let hDesc = "";
+                if (state.hmrcFlatRatePercent === "") hDesc = "Enter your flat rate percentage above to estimate what you owe HMRC.";
+                else if (X.totals.hmrc_flat_rate_due > 0) hDesc = `Calculated at ${state.hmrcFlatRatePercent}% of total revenue.`;
+                else hDesc = "Rate set but no revenue yet, so nothing owed.";
+                document.getElementById('out-hmrc-desc').innerText = hDesc;
+            }
+
+            document.getElementById('mob-net-profit').innerText = T(X.totals.net_profit, X.currency);
+            document.getElementById('mob-net-profit').className = `text-2xl font-bold tracking-tight ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+            
+            document.getElementById('mob-margin').innerText = `${X.totals.margin_pct.toFixed(1)}%`;
+            document.getElementById('mob-margin').className = `text-xl font-bold ${X.totals.margin_pct >= 15 ? 'text-emerald-300' : 'text-white/70'}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initEvents();
+        });
+    </script>
+</body>
+</html>
