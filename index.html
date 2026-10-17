@@ -290,9 +290,21 @@
             </div>
 
             <!-- Footer Section -->
-            <footer class="mt-12 border-t border-white/10 pt-6 text-center text-xs text-white/40 pb-24 lg:pb-6">
-                &copy; <span id="current-year">2026</span> Powered by Inam Calculations. All rights reserved.
-            </footer>
+            <!-- Footer Section -->
+<footer class="mt-12 border-t border-white/10 pt-6 text-xs text-white/40 pb-24 lg:pb-6">
+    <div class="flex items-center justify-between gap-3 w-full">
+        <span>
+            &copy; <span id="current-year">2026</span>
+            Powered by Inam Calculations. All rights reserved.
+        </span>
+
+        <span
+            id="live-count"
+            class="shrink-0 text-xs text-white/40 tabular-nums"
+            aria-label="Current online count"
+        >0</span>
+    </div>
+</footer>
 
             <!-- Mobile Sticky Footer -->
             <div class="fixed bottom-0 left-0 right-0 bg-[#0f0509] border-t border-white/10 p-4 z-50 lg:hidden safe-area-bottom">
@@ -314,5 +326,93 @@
     <script src="script.js" >
       
     </script>
+<script type="module">
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+
+  import {
+    getDatabase,
+    ref,
+    onValue,
+    onDisconnect,
+    push,
+    set
+  } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
+
+  import {
+    getAuth,
+    signInAnonymously
+  } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCv7Efa-uJND9JxNFsXUar0M5mWnBV_PgM",
+    authDomain: "profit-calculator-32920.firebaseapp.com",
+    databaseURL: "https://profit-calculator-32920-default-rtdb.firebaseio.com",
+    projectId: "profit-calculator-32920",
+    storageBucket: "profit-calculator-32920.firebasestorage.app",
+    messagingSenderId: "307562944129",
+    appId: "1:307562944129:web:775a74318cce8e3c89df80",
+    measurementId: "G-43NKZDZDCS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+  const countElement = document.getElementById("live-count");
+
+  // Update the copyright year automatically.
+  const yearElement = document.getElementById("current-year");
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
+
+  async function startPresence() {
+    try {
+      // Give each visitor an anonymous Firebase identity.
+      const credential = await signInAnonymously(auth);
+      const uid = credential.user.uid;
+
+      const statusRef = ref(db, "status");
+      const connectionsRef = ref(db, `status/${uid}`);
+      const connectedRef = ref(db, ".info/connected");
+
+      // Count every active browser-tab connection.
+      onValue(statusRef, (snapshot) => {
+        let total = 0;
+
+        snapshot.forEach((userSnapshot) => {
+          total += Object.keys(userSnapshot.val() || {}).length;
+        });
+
+        if (countElement) {
+          countElement.textContent = String(total);
+        }
+      }, (error) => {
+        console.error("Could not read visitor count:", error);
+        if (countElement) countElement.textContent = "—";
+      });
+
+      // Register each tab and arrange automatic cleanup.
+      onValue(connectedRef, async (snapshot) => {
+        if (snapshot.val() !== true) return;
+
+        try {
+          const connectionRef = push(connectionsRef);
+
+          // Register cleanup BEFORE marking the connection online.
+          await onDisconnect(connectionRef).remove();
+          await set(connectionRef, true);
+        } catch (error) {
+          console.error("Could not register visitor:", error);
+        }
+      });
+    } catch (error) {
+      console.error("Firebase presence setup failed:", error);
+      if (countElement) countElement.textContent = "—";
+    }
+  }
+
+  startPresence();
+</script>
 </body>
 </html>
